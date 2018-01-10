@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_v_add.c                                         :+:      :+:    :+:   */
+/*   ft_free_matrix.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 08:08:06 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/03 08:08:07 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/09 18:11:11 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/09 18:41:23 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libla.h"
 
-t_vector	*ft_v_add(t_vector *v1, t_vector *v2)
+void	ft_free_matrix(t_matrix *m)
 {
-	t_vector	*new_vector;
-	int			i;
+	int	i;
 
-	if (v1->dim != v2->dim)
-		return (NULL);
-	if (!(new_vector = (t_vector *)malloc(sizeof(t_vector))))
-		return (NULL);
-	if (!(new_vector->entries = (double *)malloc(sizeof(double) * v1->dim)))
-		return (NULL);
-	new_vector->dim = v1->dim;
 	i = 0;
-	while (i < v1->dim)
+	while (i < m->rows)
 	{
-		(new_vector->entries)[i] = (v1->entries)[i] + (v2->entries)[i];
+		free((m->entries)[i]);
 		i++;
 	}
-	return (new_vector);
+	free(m->entries);
+	free(m);
 }

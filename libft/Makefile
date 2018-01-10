@@ -6,7 +6,7 @@
 #    By: mpauw <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/08 11:06:44 by mpauw             #+#    #+#              #
-#    Updated: 2017/12/01 15:03:44 by mpauw            ###   ########.fr        #
+#    Updated: 2018/01/10 20:00:57 by mpauw            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,7 +82,9 @@ SRC = $(CPATH)ft_atoi.c\
 	  $(CPATH)ft_convert_base.c\
 	  $(CPATH)ft_sqrt_fl.c\
 	  $(CPATH)ft_sqrt_cl.c\
-	  $(CPATH)get_next_line.c
+	  $(CPATH)get_next_line.c\
+	  $(CPATH)ft_atod.c\
+	  $(CPATH)ft_free_array.c
 POINTO = ft_atoi.o\
 		 ft_bzero.o\
 		 ft_isalnum.o\
@@ -154,7 +156,9 @@ POINTO = ft_atoi.o\
 		 ft_convert_base.o\
 		 ft_sqrt_fl.o\
 		 ft_sqrt_cl.o\
-		 get_next_line.o
+		 get_next_line.o\
+		 ft_atod.o\
+		 ft_free_array.o
 NAME = libft.a
 FLAGS = -Wall -Wextra -Werror
 INCLUDE_HEADER = -I.
@@ -162,7 +166,7 @@ INCLUDE_HEADER = -I.
 all: $(NAME)
 
 $(NAME):
-	-@gcc $(FLAGS) $(INCLUDE_HEADER) -c $(SRC)
+	-@gcc -ggdb $(FLAGS) $(INCLUDE_HEADER) -c $(SRC)
 	-@ar rc $(NAME) $(POINTO) && ranlib $(NAME)
 	-@echo "Libft ready"
 

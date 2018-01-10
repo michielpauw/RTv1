@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 18:04:39 by mpauw             #+#    #+#             */
-/*   Updated: 2017/12/01 15:04:43 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/04 16:58:53 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ char				*ft_convert_base(const char *nbr, const char *base_from,
 size_t				ft_sqrt_fl(size_t nb);
 size_t				ft_sqrt_cl(size_t nb);
 int					get_next_line(const int fd, char **line);
-
+double				ft_atod(const char *s);
+void				ft_free_array(void **to_free);
 
 #endif

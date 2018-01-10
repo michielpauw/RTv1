@@ -1,34 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_v_add.c                                         :+:      :+:    :+:   */
+/*   rotate_object.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 08:08:06 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/03 08:08:07 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/10 17:46:56 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/10 17:57:37 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libla.h"
+#include "rtv1.h"
 
-t_vector	*ft_v_add(t_vector *v1, t_vector *v2)
+t_vector	rotate_object(t_vector normal, t_vector rot)
 {
-	t_vector	*new_vector;
 	int			i;
+	t_matrix	*rot_matrix;
+	t_vector	*tmp;
 
-	if (v1->dim != v2->dim)
-		return (NULL);
-	if (!(new_vector = (t_vector *)malloc(sizeof(t_vector))))
-		return (NULL);
-	if (!(new_vector->entries = (double *)malloc(sizeof(double) * v1->dim)))
-		return (NULL);
-	new_vector->dim = v1->dim;
 	i = 0;
-	while (i < v1->dim)
+	while (i < 3)
 	{
-		(new_vector->entries)[i] = (v1->entries)[i] + (v2->entries)[i];
+		if (!(rot_matrix = ft_get_3d_rot(i, (rot.entries)[i])))
+			error(2);
+		if (!(tmp = ft_lin_trans(&normal, rot_matrix)))
+			error(2);
+		free(normal.entries);
+		normal = *tmp;
+		free(tmp);
+		ft_free_matrix(rot_matrix);
 		i++;
 	}
-	return (new_vector);
+	return (normal);
 }

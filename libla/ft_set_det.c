@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_set_det.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/03 08:07:13 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/03 08:11:31 by mpauw            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libla.h"
 
 static double	get_product(int arr[], t_matrix *m)
@@ -40,7 +52,7 @@ static void		permute(int arr[], int i, t_matrix *m, int sign)
 	}
 }
 
-void	ft_set_det(t_matrix *m)
+void			ft_set_det(t_matrix *m)
 {
 	int		i;
 	int		arr[m->rows];

@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstaddright.c                                   :+:      :+:    :+:   */
+/*   key_control.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/10 12:20:56 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/08 11:44:31 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/09 08:36:05 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "rtv1.h"
 
-void	ft_lstaddright(t_list **alst, t_list *new)
+int		key_pressed(int key, void *param)
 {
-	t_list	*tmp;
+	t_event	*event;
 
-	tmp = *alst;
-	if (!tmp->content)
-		*alst = new;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
+	event = (t_event *)param;
+	if (key == 53)
+		exit(0);
+	return (1);
 }

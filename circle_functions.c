@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstaddright.c                                   :+:      :+:    :+:   */
+/*   circle_functions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/10 12:20:56 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/08 11:44:31 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/08 14:43:09 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/08 18:55:56 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "rtv1.h"
 
-void	ft_lstaddright(t_list **alst, t_list *new)
+double	get_t_value(t_object *c, t_camera camera, t_vector *dir)
 {
-	t_list	*tmp;
+	double	a;
+	double	b;
+	double	c;
+	double	d;
 
-	tmp = *alst;
-	if (!tmp->content)
-		*alst = new;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
+	a = ft_dot_product(dir, dir);
 }

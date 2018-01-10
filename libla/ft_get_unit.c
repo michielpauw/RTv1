@@ -1,33 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_v_to_row_m.c                                    :+:      :+:    :+:   */
+/*   ft_get_unit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 08:08:15 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 14:40:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/09 11:41:14 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/09 17:48:31 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libla.h"
 
-t_matrix	*ft_v_to_row_m(t_vector *v)
+t_vector	*ft_get_unit(int dir, int dim)
 {
-	t_matrix	*row_matrix;
-	int			j;
+	t_vector	*vector;
+	int			i;
 
-	if (!(row_matrix = (t_matrix *)malloc(sizeof(t_matrix))))
+	if (!(vector = (t_vector *)malloc(sizeof(t_vector))))
 		return (NULL);
-	if (!(row_matrix->entries = (double **)malloc(sizeof(double *))))
+	if (!(vector->entries = (double *)malloc(sizeof(double) * dim)))
 		return (NULL);
-	row_matrix->rows = 1;
-	row_matrix->cols = v->dim;
-	if (!((row_matrix->entries)[0] =
-				(double *)malloc(sizeof(double) * v->dim)))
+	if (dir >= dim || dir < 0 || dim < 0)
 		return (NULL);
-	j = -1;
-	while (++j < v->dim)
-		(row_matrix->entries)[0][j] = (v->entries)[j];
-	return (row_matrix);
+	i = 0;
+	vector->dim = dim;
+	while (i < dim)
+	{
+		if (i == dir)
+			(vector->entries)[i] = 1.0;
+		else
+			(vector->entries)[i] = 0;
+		i++;
+	}
+	return (vector);
 }

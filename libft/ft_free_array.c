@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstaddright.c                                   :+:      :+:    :+:   */
+/*   ft_free_array.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/10 12:20:56 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/08 11:44:31 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/04 16:55:11 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/04 17:01:11 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstaddright(t_list **alst, t_list *new)
+void	ft_free_array(void **to_free)
 {
-	t_list	*tmp;
+	int	i;
 
-	tmp = *alst;
-	if (!tmp->content)
-		*alst = new;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
+	i = 0;
+	while (*(to_free + i))
+		free(*(to_free + i++));
+	free(to_free);
 }

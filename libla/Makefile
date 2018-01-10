@@ -10,7 +10,12 @@ SRC = ft_matrix_mult.c \
 	  ft_m_to_v.c \
 	  ft_get_id_matrix.c \
 	  ft_set_det.c \
-	  ft_lin_trans.c
+	  ft_lin_trans.c \
+	  ft_v_subtract.c \
+	  ft_get_unit.c \
+	  ft_get_3d_rot.c \
+	  ft_free_matrix.c \
+	  ft_free_vector.c
 OBJ = 	ft_matrix_mult.o \
 		ft_get_zero_matrix.o \
 	  	ft_dot_product.o \
@@ -23,7 +28,12 @@ OBJ = 	ft_matrix_mult.o \
 	  	ft_m_to_v.o \
 		ft_get_id_matrix.o \
 		ft_set_det.o \
-		ft_lin_trans.o
+		ft_lin_trans.o \
+	  	ft_v_subtract.o \
+		ft_get_unit.o \
+		ft_get_3d_rot.o \
+	  	ft_free_matrix.o \
+	  	ft_free_vector.o
 NAME = libla.a
 INCLUDES = -I. -I../libft
 FLAGS = -Wall -Werror -Wextra
@@ -31,7 +41,7 @@ FLAGS = -Wall -Werror -Wextra
 all: $(NAME)
 
 $(NAME):
-	-@gcc $(FLAGS) $(INCLUDES) -c $(SRC)
+	-@gcc -ggdb $(FLAGS) $(INCLUDES) -c $(SRC)
 	-@ar rc $(NAME) $(OBJ) && ranlib $(NAME)
 	-@echo "Libla ready"
 

@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_v_to_row_m.c                                    :+:      :+:    :+:   */
+/*   ft_v_subtract.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 08:08:15 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 14:40:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/08 16:23:28 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/08 16:24:07 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libla.h"
 
-t_matrix	*ft_v_to_row_m(t_vector *v)
+t_vector	*ft_v_subtract(t_vector *v1, t_vector *v2)
 {
-	t_matrix	*row_matrix;
-	int			j;
+	t_vector	*new_vector;
+	int			i;
 
-	if (!(row_matrix = (t_matrix *)malloc(sizeof(t_matrix))))
+	if (v1->dim != v2->dim)
 		return (NULL);
-	if (!(row_matrix->entries = (double **)malloc(sizeof(double *))))
+	if (!(new_vector = (t_vector *)malloc(sizeof(t_vector))))
 		return (NULL);
-	row_matrix->rows = 1;
-	row_matrix->cols = v->dim;
-	if (!((row_matrix->entries)[0] =
-				(double *)malloc(sizeof(double) * v->dim)))
+	if (!(new_vector->entries = (double *)malloc(sizeof(double) * v1->dim)))
 		return (NULL);
-	j = -1;
-	while (++j < v->dim)
-		(row_matrix->entries)[0][j] = (v->entries)[j];
-	return (row_matrix);
+	new_vector->dim = v1->dim;
+	i = 0;
+	while (i < v1->dim)
+	{
+		(new_vector->entries)[i] = (v1->entries)[i] - (v2->entries)[i];
+		i++;
+	}
+	return (new_vector);
 }
