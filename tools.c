@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 13:57:58 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 11:31:52 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/12 14:16:50 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,21 @@ void	update_vector(int fd, t_vector *vector)
 		(vector->entries)[i] = ft_atod(values_str[i]);
 	ft_free_array((void **)values_str);
 	free(line);
+}
+
+double	get_nearest_intersection(double a, double b, double d)
+{
+	double	t_1;
+	double	t_2;
+
+	t_1 = (-b + sqrt(d)) / (2 * a);
+	t_2 = (-b - sqrt(d)) / (2 * a);
+	if (t_1 < 0.001 && t_2 < 0.001)
+		return (-1);
+	if (t_1 < 0.001)
+		return (t_2);
+	if (t_2 < 0.001)
+		return (t_1);
+	else
+		return ((t_1 < t_2) ? t_1 : t_2);
 }

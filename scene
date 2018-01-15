@@ -45,4 +45,28 @@ object:
 	origin:
 		0.0 -10.0 0.0
 	rotation:
-		45.0 10.0 0.0
+		90.0 10.0 0.0
+
+object:
+	type:
+		cylinder
+	origin:
+		20.0 300.0 50.0
+	radius:
+		50.0
+	rotation:
+		45.0 45.0 0.0
+	color:
+		0.3 0.2 0.5
+
+object:
+	type:
+		cone
+	origin:
+		-200.0 -200.0 150.0
+	radius:
+		0.4	
+	rotation:
+		45.0 45.0 0.0
+	color:
+		0.3 0.2 0.5

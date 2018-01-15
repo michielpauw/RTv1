@@ -6,49 +6,68 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 13:38:46 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/09 16:18:40 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/15 16:16:38 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-static int	get_visible_object(double *t_value, t_vector *r_origin,
-		t_vector *dir, t_list *objects)
+static t_vector	*get_origin(int id, t_list *lst)
+{
+	t_list		*tmp;
+	t_source	*src;
+
+	tmp = lst;
+	while (tmp)
+	{
+		src = (t_source *)(tmp->content);
+		if (src->id == id)
+			return (&(src->origin));
+		tmp = tmp->next;
+	}
+	error (1);
+	return (NULL);
+}
+
+static int	get_visible_object(double *t_value, t_vector pixel, int src_id,
+		t_list *objects)
 {
 	int			object_id;
 	double		tmp;
 	t_list		*tmp_list;
 	t_object	*obj;
+	t_vector	*dir;
 
 	tmp_list = objects;
 	object_id = 0;
+	int i = 0;
 	while (tmp_list)
 	{
 		obj = (t_object *)tmp_list->content;
-		tmp = obj->f(obj, dir, r_origin);
+		dir = ft_v_subtract(&pixel, get_origin(src_id, obj->rel_sources));
+		tmp = obj->f(obj, dir);
 		if (tmp > 0 && tmp < *t_value)
 		{
 			*t_value = tmp;
 			object_id = (obj->id);
 		}
 		tmp_list = tmp_list->next;
+		i++;
+		ft_free_vector(dir);
 	}
 	return (object_id);
 }
 
 static int	get_pixel_value(t_scene *scene, t_vector pixel)
 {
-	t_vector	*dir;
 	t_list		*objects;
 	double		t_value;
 	int			object_id;
 
-	dir = ft_v_subtract(&pixel, &((scene->camera).origin));
 	objects = scene->objects;
 	t_value = MAX_T_VALUE;
 	object_id = -1;
-	object_id = get_visible_object(&t_value, &((scene->camera).origin),
-			dir, objects);
+	object_id = get_visible_object(&t_value, pixel, 0, objects);
 	return (object_id);
 }
 
@@ -80,9 +99,13 @@ void		raytracer(t_event *event, t_scene *scene)
 				((int *)img->img_arr)[j + i * img->size_line_int] = 0xff00;
 			else if (pix_val == 3)
 				((int *)img->img_arr)[j + i * img->size_line_int] = 0xff0000;
+			else if (pix_val == 4)
+				((int *)img->img_arr)[j + i * img->size_line_int] = 0xffff00;
+			else if (pix_val == 5)
+				((int *)img->img_arr)[j + i * img->size_line_int] = 0x00ffff;
 			j++;
 		}
 		i++;
 	}
-	mlx_put_image_to_window(event->mlx, event->win, (event->img)->img_ptr, 0, 0);
+	free(pixel.entries);
 }

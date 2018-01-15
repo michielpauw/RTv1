@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 13:16:52 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 17:59:41 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/15 16:34:49 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,15 @@ static void		init_def_object(t_object *object, int id)
 	def.entries = get_3d_entries (0.0, 0.0, 0.0);
 	object->rotation = def;
 	object->radius = 0.0;
-	object->slope = 0.0;
 	def.entries = get_3d_entries (0.0, 1.0, 0.0);
 	object->color = def;
 	def.entries = get_3d_entries (0.0, 1.0, 0.0);
 	object->normal = def;
 }
-
-static void		set_det(t_object *object)
+/*
+static void		set_det(t_object *object, t_scene *scene)
 {
-	object->normal = rotate_object(object->normal, object->rotation);
+	object->normal = rotate_object(object, scene);
 	if (object->type == 0)
 		object->f = &get_t_plane;
 	else if (object->type == 1)
@@ -42,6 +41,19 @@ static void		set_det(t_object *object)
 		object->f = &get_t_cylinder;
 	else if (object->type == 3)
 		object->f = &get_t_cone;
+}
+*/
+static void		set_det(t_object *object, t_scene *scene)
+{
+	rotate_object(object, scene);
+//	if (object->type == 0)
+//		object->f = &get_s_plane;
+//	else if (object->type == 1)
+//		object->f = &get_s_sphere;
+	if (object->type == 2)
+		object->f = &get_s_cylinder;
+//	else if (object->type == 3)
+//		object->f = &get_s_cone;
 }
 
 static double	get_radius_from_line(int fd)
@@ -86,7 +98,7 @@ static int		get_object_type(int fd)
 	return (to_return);
 }
 
-void			set_object(t_list **objects, int id, int fd)
+void			set_object(t_list **objects, t_scene *scene, int id, int fd)
 {
 	char		*line;
 	t_object	object;
@@ -98,20 +110,19 @@ void			set_object(t_list **objects, int id, int fd)
 			break ;
 		if (*line != '\t')
 			error(3);
-		line++;
-		if (ft_strncmp(line, "type:", 5) == 0)
+		if (ft_strncmp(line + 1, "type:", 5) == 0)
 			object.type = get_object_type(fd);
-		else if (ft_strncmp(line, "origin:", 7) == 0)
+		else if (ft_strncmp(line + 1, "origin:", 7) == 0)
 			update_vector(fd, &(object.origin));
-		else if (ft_strncmp(line, "rotation:", 8) == 0)
+		else if (ft_strncmp(line + 1, "rotation:", 8) == 0)
 			update_vector(fd, &(object.rotation));
-		else if (ft_strncmp(line, "radius:", 7) == 0)
+		else if (ft_strncmp(line + 1, "radius:", 7) == 0)
 			object.radius = get_radius_from_line(fd);
-		else if (ft_strncmp(line, "color:", 6) == 0)
+		else if (ft_strncmp(line + 1, "color:", 6) == 0)
 			update_vector(fd, &(object.color));
-		free(--line);
+		free(line);
 	}
-	set_det(&object);
+	set_det(&object, scene);
 	free(line);
 	ft_lstaddnewr(objects, &object, sizeof(object));
 }

@@ -15,7 +15,11 @@ SRC = ft_matrix_mult.c \
 	  ft_get_unit.c \
 	  ft_get_3d_rot.c \
 	  ft_free_matrix.c \
-	  ft_free_vector.c
+	  ft_free_vector.c \
+	  ft_get_v_size.c \
+	  ft_make_unit.c \
+	  ft_cross_product.c \
+	  ft_rotate_v.c
 OBJ = 	ft_matrix_mult.o \
 		ft_get_zero_matrix.o \
 	  	ft_dot_product.o \
@@ -33,7 +37,11 @@ OBJ = 	ft_matrix_mult.o \
 		ft_get_unit.o \
 		ft_get_3d_rot.o \
 	  	ft_free_matrix.o \
-	  	ft_free_vector.o
+	  	ft_free_vector.o \
+	  	ft_get_v_size.o \
+	  	ft_make_unit.o \
+		ft_cross_product.o \
+		ft_rotate_v.o
 NAME = libla.a
 INCLUDES = -I. -I../libft
 FLAGS = -Wall -Werror -Wextra

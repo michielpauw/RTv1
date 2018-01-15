@@ -1,0 +1,32 @@
+#
+# Second Scene
+#
+
+name:
+	Second Scene
+
+camera:
+	origin: 
+		300.0 0.0 0.0
+	rotation: 
+		0.0 0.0 0.0
+
+light:
+	origin: 
+		150.0 -21.0 3434.324
+
+render:
+	dimensions:
+		1200 900
+
+object:
+	type:
+		cone
+	origin:
+		0.0 100.0 50.0
+	radius:
+		1.0	
+	rotation:
+		45.0 45.0 0.0
+	color:
+		0.3 0.2 0.5

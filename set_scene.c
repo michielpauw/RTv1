@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 08:23:41 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 18:19:00 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/15 16:43:07 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,41 +17,40 @@ static void	init_def_scene(t_scene **scene)
 	t_vector	def;
 
 	def.dim = 3;
-	def.entries = get_3d_entries(200.0, 0.0, 0.0);	
 	(*scene)->name = "Default Scene";
 	(*scene)->amount_obj = 0;
+	(*scene)->amount_src = 0;
+	(*scene)->amount_light = 0;
 	(*scene)->width = 1080;
 	(*scene)->height = 800;
-	((*scene)->camera).origin = def;
-	def.entries = get_3d_entries(0.0, 0.0, 0.0);
-	((*scene)->camera).rotation = def;
-	def.entries = get_3d_entries(0.0, 0.0, 0.0);
-	((*scene)->light).origin = def;
 }
 
-static void	set_cam_or_light(t_scene **scene, int fd, int light)
+static void	set_source(t_scene **scene, int fd, int type)
 {
-	char	*line;
+	t_source	source;
+	char		*line;
 
+	if (!((source.origin).entries = (double *)malloc(sizeof(double) * 3)) || 
+			!((source.rotation).entries = (double *)malloc(sizeof(double) * 3)))
+		error(1);
+	source.id = (*scene)->amount_obj;
+	source.type = type;
+	(*scene)->amount_light += type;
+	(*scene)->amount_src++;
 	while (get_next_line(fd, &line) == 1)
 	{
 		if (*line == '\0')
 			break ;
 		if (*line != '\t')
 			error(3);
-		line++;
-		if (ft_strncmp(line, "origin:", 7) == 0)
-		{
-			if (!light)
-				update_vector(fd, &(((*scene)->camera).origin));
-			else
-				update_vector(fd, &(((*scene)->light).origin));
-		}
-		else if (ft_strncmp(line, "rotation:", 7) == 0 && !light)
-			update_vector(fd, &(((*scene)->camera).rotation));
-		free(--line);
+		if (ft_strncmp(line + 1, "origin:", 7) == 0)
+			update_vector(fd, &(source.origin));
+		else if (ft_strncmp(line + 1, "rotation:", 7) == 0 && !type)
+			update_vector(fd, &(source.rotation));
+		free(line);
 	}
 	free(line);
+	ft_lstaddnewr(&((*scene)->sources), &source, sizeof(source));
 }
 
 static void	set_name(t_scene **scene, int fd)
@@ -102,13 +101,14 @@ void		set_scene(int fd, t_scene **scene)
 	{
 		if (ft_strncmp(line, "name:", 5) == 0)
 			set_name(scene, fd);
-		else if (ft_strncmp(line, "camera:", 7) == 0 ||
-				ft_strncmp(line, "light:", 6) == 0)
-			set_cam_or_light(scene, fd, (*line == 'l') ? 1 : 0);
+		else if (ft_strncmp(line, "camera:", 7) == 0)
+			set_source(scene, fd, 1);
+		else if (ft_strncmp(line, "light:", 6) == 0)
+			set_source(scene, fd, 0);
 		else if (ft_strncmp(line, "object:", 7) == 0)
 		{
 			(*scene)->amount_obj++;
-			set_object(&((*scene)->objects),
+			set_object(&((*scene)->objects), *scene,
 					(*scene)->amount_obj, fd);
 		}
 		else if (ft_strncmp(line, "render:", 7) == 0)
@@ -116,4 +116,6 @@ void		set_scene(int fd, t_scene **scene)
 		free(line);
 	}
 	free(line);
+	if ((*scene)->amount_src - (*scene)->amount_light != 1)
+		s_error("Exactly one camera expected");
 }

@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 08:05:39 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/10 18:19:38 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/15 16:33:09 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,12 @@ int		main(int argc, char **argv)
 	if ((fd = open(argv[1], O_RDONLY)) == -1)
 		error(0);
 	if (!(scene = (t_scene *)malloc(sizeof(t_scene))) ||
-			!(scene->objects = ft_lstnew(NULL, 0)))
+			!(scene->objects = ft_lstnew(NULL, 0)) ||
+			!(scene->sources = ft_lstnew(NULL, 0)))
 		error(2);
 	set_scene(fd, &scene);
 	event = init_window(scene->name);
 	raytracer(event, scene);
+	mlx_put_image_to_window(event->mlx, event->win, (event->img)->img_ptr, 0, 0);
 	init_loop(event);
 }
