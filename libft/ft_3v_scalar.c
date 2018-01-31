@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   ft_3v_scalar.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/23 11:23:52 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/23 11:25:22 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "libft.h"
 
-int		key_pressed(int key, void *param)
+void	ft_3v_scalar(t_3v *v, double s)
 {
-	t_event	*event;
+	int	i;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	if (!v)
+		return ;
+	i = 0;
+	while (i < 3)
+	{
+		(v->v)[i] = (v->v)[i] * s;
+		i++;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 08:05:39 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/15 16:33:09 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/31 12:03:39 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 void	error(int err)
 {
-	if (errno != 0)
-		perror("Error");
-	else
-	{
-		if (err == 0)
-			ft_putstr_fd("Error: Error reading file\n", 2);
-		else if (err == 1)
-			ft_putstr_fd("Error: Error in memory allocation\n", 2);
-		else if (err == 2)
-			ft_putstr_fd("Error: NULL returned\n", 2);
-		else if (err == 3)
-			ft_putstr_fd("Error: Values must be properly tabulated.\n", 2);
-	}
+	if (err == 0)
+		ft_putstr_fd("Error: Error reading file\n", 2);
+	else if (err == 1)
+		ft_putstr_fd("Error: Error in memory allocation\n", 2);
+	else if (err == 2)
+		ft_putstr_fd("Error: NULL returned\n", 2);
+	else if (err == 3)
+		ft_putstr_fd("Error: Values must be properly tabulated.\n", 2);
+	else if (err == 4)
+		ft_putstr_fd("Error: Color values must be between 0 and 1.\n", 2);
+	else if (err == 5)
+		ft_putstr_fd("Error: There is a vector of size 0. Check if there are\
+				lights with the same coordinates as objects.\n", 2);
 	exit(1);
 }
 
@@ -44,77 +44,24 @@ void	usage(void)
 	exit(0);
 }
 
-/*
-void	print_all_values(t_scene *scene)
-{
-	t_camera	camera;
-	t_light		light;
-	t_object	*obj;
-	t_list		*lst;
-	t_xyz		coor;
-	int			id;
-
-	camera = scene->camera;
-	light = scene->light;
-	lst = (t_list *)(scene->objects);
-	obj = (t_object *)lst->content;
-	printf("Sizeof object: %lu\n", sizeof(*obj));
-	printf("Name: %s\n", scene->name);
-	printf("Amount of objects: %d\n", scene->amount_obj);
-	printf("Width: %d\n", scene->width);
-	printf("Height: %d\n", scene->height);
-	coor = camera.rotation;
-	printf("Camera rotation: %f %f %f\n", coor.x, coor.y, coor.z);
-	coor = camera.origin;
-	printf("Camera origin: %f %f %f\n", coor.x, coor.y, coor.z);
-	coor = light.origin;
-	printf("Light origin: %f %f %f\n", coor.x, coor.y, coor.z);
-	coor = light.origin;
-	printf("Light origin: %f %f %f\n", coor.x, coor.y, coor.z);
-	id = obj->id;
-	coor = obj->color;
-	printf("Obj color: %f %f %f\n", coor.x, coor.y, coor.z);
-}
-*/
-/*
-t_vector	*leak_test(void)
-{
-	t_matrix	*matrix;
-	t_vector	*vector;
-	t_vector	*lin_trans;
-
-	if (!(vector = (t_vector *)malloc(sizeof(t_vector))))
-		error(1);
-	if (!(vector->entries = (double *)malloc(sizeof(double) * 3)))
-		error(1);
-	matrix = ft_get_3d_rot(0.1, 0.1, 0.1);
-	(vector->entries)[0] = 1.0;
-	(vector->entries)[1] = 0.0;
-	(vector->entries)[2] = 0.0;
-	vector->dim = 3;
-	lin_trans = ft_lin_trans(vector, matrix);
-	printf("%p\n", (void *)vector);
-	return (lin_trans);
-}
-*/
 int		main(int argc, char **argv)
 {
-	int		fd;
-	t_scene	*scene;
-	t_event	*event;
+	int			fd;
+	t_scene		*scene;
+	t_event		*event;
 
-	errno = 0;
 	if (argc != 2)
 		usage();
 	if ((fd = open(argv[1], O_RDONLY)) == -1)
 		error(0);
-	if (!(scene = (t_scene *)malloc(sizeof(t_scene))) ||
-			!(scene->objects = ft_lstnew(NULL, 0)) ||
-			!(scene->sources = ft_lstnew(NULL, 0)))
-		error(2);
+	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
+		error(1);
 	set_scene(fd, &scene);
-	event = init_window(scene->name);
+	if (!(scene->cam_set))
+		error(0);
+	event = init_window(scene);
 	raytracer(event, scene);
-	mlx_put_image_to_window(event->mlx, event->win, (event->img)->img_ptr, 0, 0);
+	mlx_put_image_to_window(event->mlx, event->win,
+			(event->img)->img_ptr, 0, 0);
 	init_loop(event);
 }

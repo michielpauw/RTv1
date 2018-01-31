@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   ft_3v_add.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/23 11:08:16 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/23 11:19:32 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "libft.h"
 
-int		key_pressed(int key, void *param)
+t_3v	*ft_3v_add(t_3v *v1, t_3v *v2)
 {
-	t_event	*event;
+	t_3v	*v_add;
+	int		i;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	if (!v1 || !v2)
+		return (NULL);
+	if (!(v_add = (t_3v *)malloc(sizeof(t_3v))))
+		return (NULL);
+	i = 0;
+	while (i < 3)
+	{
+		(v_add->v)[i] = (v1->v)[i] + (v2->v)[i];
+		i++;
+	}
+	return (v_add);
 }

@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   get_source.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/19 09:19:59 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/30 17:28:15 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-int		key_pressed(int key, void *param)
+t_source	*get_source(int id, t_list *lst)
 {
-	t_event	*event;
+	t_list		*tmp;
+	t_source	*src;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	tmp = lst;
+	while (tmp && tmp->content)
+	{
+		src = (t_source *)(tmp->content);
+		if (src->id == id)
+			return (src);
+		tmp = tmp->next;
+	}
+	error(1);
+	return (src);
 }

@@ -6,45 +6,44 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 13:57:58 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/12 14:16:50 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/30 16:30:08 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-double	*get_3d_entries(double x, double y, double z)
+void	update_vector(t_3v *vector, char *line)
 {
-	double	*entries;
+	double	*tmp;
+	int		i;
 
-	if (!(entries = (double *)malloc(sizeof(double) * 3)))
-		error(1);
-	entries[0] = x;
-	entries[1] = y;
-	entries[2] = z;
-	return (entries);
+	if (!(tmp = (double *)malloc(3 * sizeof(double))))
+		error(0);
+	get_doubles_from_line(tmp, line, 3);
+	i = 0;
+	while (i < 3)
+	{
+		(vector->v)[i] = tmp[i];
+		i++;
+	}
+	free(tmp);
 }
 
-void	update_vector(int fd, t_vector *vector)
+void	get_doubles_from_line(double *vector, char *line, int size)
 {
 	char		**values_str;
 	int			i;
-	char		*line;
 
-	if (get_next_line(fd, &line) != 1)
-		error(0);
-	if (*line != '\t' || *(line + 1) != '\t')
-		error(3);
-	values_str = ft_strsplit((line + 2), ' ');
+	values_str = ft_strsplit((line), ' ');
 	i = 0;
 	while (*(values_str + i))
 		i++;
-	if (i != VEC_SIZE)
+	if (i != size)
 		s_error("Not the right amount of vector values");
 	i = -1;
-	while (++i < VEC_SIZE)
-		(vector->entries)[i] = ft_atod(values_str[i]);
+	while (++i < size)
+		vector[i] = ft_atod(values_str[i]);
 	ft_free_array((void **)values_str);
-	free(line);
 }
 
 double	get_nearest_intersection(double a, double b, double d)
@@ -62,4 +61,29 @@ double	get_nearest_intersection(double a, double b, double d)
 		return (t_1);
 	else
 		return ((t_1 < t_2) ? t_1 : t_2);
+}
+
+int		get_color(double blue, double green, double red)
+{
+	int	color;
+	int	int_value;
+
+	if (blue > 1)
+		blue = 1;
+	else if (blue < 0)
+		blue = 0;
+	if (green > 1)
+		green = 1;
+	else if (green < 0)
+		green = 0;
+	if (red > 1)
+		red = 1;
+	else if (red < 0)
+		red = 0;
+	color = blue * 0xff;
+	int_value = green * 0xff;
+	color += int_value * 0x100;
+	int_value = red * 0xff;
+	color += int_value * 0x10000;
+	return (color);
 }

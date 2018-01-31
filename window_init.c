@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 17:10:12 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/11 12:23:29 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/30 17:26:36 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,16 @@ void			init_loop(t_event *event)
 	mlx_loop(event->mlx);
 }
 
-t_event			*init_window(char *scene)
+t_event			*init_window(t_scene *scene)
 {
 	t_event	*event;
 
 	if (!(event = (t_event *)malloc(sizeof(t_event))))
 		error(1);
 	event->mlx = mlx_init();
-	event->win = mlx_new_window(event->mlx, IMG_W, IMG_H, scene);
-	event->scene = scene;	
-	event->img = init_image(event->mlx, IMG_W, IMG_H);
+	event->win = mlx_new_window(event->mlx, scene->width,
+			scene->height, scene->name);
+	event->scene = scene->name;
+	event->img = init_image(event->mlx, scene->width, scene->height);
 	return (event);
 }

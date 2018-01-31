@@ -1,23 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   ft_get_3_unit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/23 11:14:00 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/23 12:20:08 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "libft.h"
 
-int		key_pressed(int key, void *param)
+t_3v	*ft_get_3_unit(int dir)
 {
-	t_event	*event;
+	t_3v	*vector;
+	int		i;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	if (dir < 0 || dir > 2)
+		return (NULL);
+	if (!(vector = (t_3v *)malloc(sizeof(t_3v))))
+		return (NULL);
+	i = 0;
+	while (i < 3)
+	{
+		if (i == dir)
+			(vector->v)[i] = 1.0;
+		else
+			(vector->v)[i] = 0;
+		i++;
+	}
+	return (vector);
 }

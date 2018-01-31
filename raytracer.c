@@ -6,106 +6,91 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 13:38:46 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/15 16:16:38 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/31 15:20:20 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-static t_vector	*get_origin(int id, t_list *lst)
-{
-	t_list		*tmp;
-	t_source	*src;
-
-	tmp = lst;
-	while (tmp)
-	{
-		src = (t_source *)(tmp->content);
-		if (src->id == id)
-			return (&(src->origin));
-		tmp = tmp->next;
-	}
-	error (1);
-	return (NULL);
-}
-
-static int	get_visible_object(double *t_value, t_vector pixel, int src_id,
+static t_object	*get_visible_object(double *s_value, t_3v dir, int src_id,
 		t_list *objects)
 {
-	int			object_id;
 	double		tmp;
-	t_list		*tmp_list;
 	t_object	*obj;
-	t_vector	*dir;
+	t_object	*visible_object;
+	t_source	*src;
+	t_3v		*tmp_dir;
 
-	tmp_list = objects;
-	object_id = 0;
-	int i = 0;
-	while (tmp_list)
+	visible_object = NULL;
+	while (objects && objects->content)
 	{
-		obj = (t_object *)tmp_list->content;
-		dir = ft_v_subtract(&pixel, get_origin(src_id, obj->rel_sources));
-		tmp = obj->f(obj, dir);
-		if (tmp > 0 && tmp < *t_value)
+		obj = (t_object *)objects->content;
+		tmp_dir = get_dir(dir, obj->rotation);
+		if (src_id == 0)
+			src = &(obj->rel_cam);
+		else
+			src = get_source(src_id, obj->rel_lights);
+		tmp = obj->f(obj, *tmp_dir, src->origin);
+		if (tmp > 0 && tmp < *s_value)
 		{
-			*t_value = tmp;
-			object_id = (obj->id);
+			*s_value = tmp;
+			visible_object = obj;
 		}
-		tmp_list = tmp_list->next;
-		i++;
-		ft_free_vector(dir);
+		objects = objects->next;
+		free(tmp_dir);
 	}
-	return (object_id);
+	return (visible_object);
 }
 
-static int	get_pixel_value(t_scene *scene, t_vector pixel)
+static void		get_pixel_value(t_scene *scene, t_3v pixel, int *pix_v)
 {
-	t_list		*objects;
-	double		t_value;
-	int			object_id;
+	t_list		*tmp;
+	t_source	cam;
+	double		s_value;
+	t_object	*obj;
+	t_3v		point;
 
-	objects = scene->objects;
-	t_value = MAX_T_VALUE;
-	object_id = -1;
-	object_id = get_visible_object(&t_value, pixel, 0, objects);
-	return (object_id);
+	tmp = scene->objects;
+	s_value = MAX_S_VALUE;
+	cam = scene->camera;
+	(pixel.v)[0] -= ((cam.origin).v)[0];
+	(pixel.v)[1] -= ((cam.origin).v)[1];
+	(pixel.v)[2] -= ((cam.origin).v)[2];
+	change_dir(&pixel, (scene->camera).rotation);
+	obj = get_visible_object(&s_value, pixel, 0, scene->objects);
+	scene->objects = tmp;
+	if (obj)
+	{
+		point = cam.origin;
+		ft_3v_scalar(&pixel, s_value);
+		(point.v)[0] += (pixel.v)[0];
+		(point.v)[1] += (pixel.v)[1];
+		(point.v)[2] += (pixel.v)[2];
+		*pix_v = (get_light_value(point, scene, scene->lights, obj));
+	}
 }
 
-void		raytracer(t_event *event, t_scene *scene)
+void			raytracer(t_event *event, t_scene *scene)
 {
 	t_img		*img;
-	t_vector	pixel;
+	t_3v		pixel;
 	int			i;
 	int			j;
 	int			pix_val;
 
 	img = event->img;
-	i = 0;
-	pixel.dim = VEC_SIZE;
-	if (!(pixel.entries = (double *)malloc(sizeof(double) * VEC_SIZE)))
-		error(1);
-	(pixel.entries)[0] = 0.0;
-	while (i < img->height)
+	i = -1;
+	while (++i < img->height)
 	{
-		j = 0;
-		(pixel.entries)[2] = (double)(img->height / 2.0 - i);
-		while (j < img->width)
+		j = -1;
+		while (++j < img->width)
 		{
-			(pixel.entries)[1] = (double)(j - img->width / 2.0);
-			pix_val = get_pixel_value(scene, pixel);
-			if (pix_val == 1)
-				((int *)img->img_arr)[j + i * img->size_line_int] = 0x8f;
-			else if (pix_val == 2)
-				((int *)img->img_arr)[j + i * img->size_line_int] = 0xff00;
-			else if (pix_val == 3)
-				((int *)img->img_arr)[j + i * img->size_line_int] = 0xff0000;
-			else if (pix_val == 4)
-				((int *)img->img_arr)[j + i * img->size_line_int] = 0xffff00;
-			else if (pix_val == 5)
-				((int *)img->img_arr)[j + i * img->size_line_int] = 0x00ffff;
-			j++;
+			pix_val = BG_COLOR;
+			(pixel.v)[0] = 0.0;
+			(pixel.v)[1] = (double)(j - img->width / 2.0);
+			(pixel.v)[2] = (double)(img->height / 2.0 - i);
+			get_pixel_value(scene, pixel, &pix_val);
+			((int *)img->img_arr)[j + i * img->size_line_int] = pix_val;
 		}
-		i++;
 	}
-	free(pixel.entries);
 }

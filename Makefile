@@ -6,64 +6,63 @@
 #    By: mpauw <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/06 17:41:17 by mpauw             #+#    #+#              #
-#    Updated: 2018/01/15 16:10:24 by mpauw            ###   ########.fr        #
+#    Updated: 2018/01/31 16:55:30 by mpauw            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = RTv1
+NAME = RTv1 
 FLAGS = -Wall -Wextra -Werror 
 INCLUDES = rtv1.h
 SRCS = 	rtv1.c\
 		set_scene.c\
 		set_object.c\
+		set_camera.c\
+		set_render.c\
+		add_light.c\
+		get_dir.c\
+		get_source.c\
+		get_intensity.c\
 		tools.c\
-		s_cylinder_function.c\
+		s_functions.c\
 		raytracer.c\
 		window_init.c\
 		key_control.c\
-		rotate_object.c
+		rotate_object.c\
+		get_light_value.c
 OBJ = $(SRCS:%.c=%.o)
 LFTDIR = libft/
-LLADIR = libla/
 LMLXDIR = minilibx_macos/
 LIBFT = libft.a
-LIBLA = libla.a
 LIBMLX = libmlx.a
 FT = ft
-LA = la
 MLX = mlx
 MAKE = make
 FRAMEWORK = -framework OpenGL -framework AppKit
 
 all : $(NAME)
 
-$(NAME): $(OBJ) $(LFTDIR)$(LIBFT) $(LMLXDIR)$(LIBMLX) $(LLADIR)$(LIBLA)
+$(NAME): $(OBJ) $(LFTDIR)$(LIBFT) $(LMLXDIR)$(LIBMLX)
 	-@gcc $(FLAGS) -o $(NAME) -ggdb $(OBJ) -I$(LFTDIR) -L$(LFTDIR) -l$(FT) \
-	 -I$(LMLXDIR) -L$(LMLXDIR) -l$(MLX) -I$(LLADIR) -L$(LLADIR) -l$(LA) \
+	 -I$(LMLXDIR) -L$(LMLXDIR) -l$(MLX) \
 	 $(FRAMEWORK)
 	-@echo "RTv1 Ready"
 
 %.o: %.c $(INCLUDES)
-	-@gcc $(FLAGS) -I$(LFTDIR) -I$(LMLXDIR) -I$(LLADIR) -c $(SRCS)
+	-@gcc $(FLAGS) -I$(LFTDIR) -I$(LMLXDIR) -c $(SRCS)
 
 $(LFTDIR)$(LIBFT):
 	$(MAKE) -C $(LFTDIR) $(LIBFT)
-
-$(LLADIR)$(LIBLA):
-	$(MAKE) -C $(LLADIR) $(LIBLA)
 
 $(LMLXDIR)$(LIBMLX):
 	$(MAKE) -C $(LMLXDIR) $(LIBMLX)
 
 clean:
 	-@/bin/rm -f $(OBJ)
-#	-@$(MAKE) -C $(LFTDIR) clean
-#	-@$(MAKE) -C $(LMLXDIR) clean
-#	-@$(MAKE) -C $(LLADIR) clean
+	-@$(MAKE) -C $(LFTDIR) clean
+	-@$(MAKE) -C $(LMLXDIR) clean
 
 fclean: clean
 	-@/bin/rm -f $(NAME)
-#	-@$(MAKE) -C $(LFTDIR) fclean
-#	-@$(MAKE) -C $(LLADIR) fclean
+	-@$(MAKE) -C $(LFTDIR) fclean
 
 re: fclean all

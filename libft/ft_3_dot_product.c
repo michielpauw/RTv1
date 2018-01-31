@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   ft_3_dot_product.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/23 10:24:19 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/23 10:31:39 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "libft.h"
 
-int		key_pressed(int key, void *param)
+double	ft_3_dot_product(t_3v *v1, t_3v *v2)
 {
-	t_event	*event;
+	double	dot_product;
+	int		i;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	if (!v1 || !v2)
+		return (0);
+	dot_product = 0;
+	i = 0;
+	while (i < 3)
+	{
+		dot_product += (v1->v)[i] * (v2->v)[i];
+		i++;
+	}
+	return (dot_product);
 }

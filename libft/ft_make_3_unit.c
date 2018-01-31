@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_control.c                                      :+:      :+:    :+:   */
+/*   ft_make_3_unit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/09 08:24:38 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/24 11:27:09 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/23 11:17:13 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/23 11:19:29 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rtv1.h"
+#include "libft.h"
 
-int		key_pressed(int key, void *param)
+void	ft_make_3_unit(t_3v *v)
 {
-	t_event	*event;
+	int		i;
+	double	size;
 
-	event = (t_event *)param;
-	if (key == 0x35)
-		exit(0);
-	return (1);
+	if (!v)
+		return ;
+	i = 0;
+	size = ft_get_3v_size(*v);
+	if (size == 0)
+		return ;
+	while (i < 3)
+	{
+		(v->v)[i] /= size;
+		i++;
+	}
 }

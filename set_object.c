@@ -1,126 +1,114 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_object.c                                       :+:      :+:    :+:   */
+/*   set_object_new.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 13:16:52 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/15 16:34:49 by mpauw            ###   ########.fr       */
+/*   Created: 2018/01/30 15:22:15 by mpauw             #+#    #+#             */
+/*   Updated: 2018/01/30 17:27:20 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
 
-static void		init_def_object(t_object *object, int id)
+static void	init_def_object(t_object *object, int id)
 {
-	t_vector	def;
+	t_3v	def;
 
-	def.dim = 3;
-	def.entries = get_3d_entries (0.0, 0.0, 0.0);
+	def = ft_init_3v(0.0, 0.0, 0.0);
 	object->id = id;
 	object->type = 0;
 	object->origin = def;
-	def.entries = get_3d_entries (0.0, 0.0, 0.0);
+	def = ft_init_3v(0.0, 0.0, 0.0);
 	object->rotation = def;
-	object->radius = 0.0;
-	def.entries = get_3d_entries (0.0, 1.0, 0.0);
+	object->radius = RADIUS;
+	object->diffuse = ALBEDO;
+	def = ft_init_3v(1.0, 1.0, 0.0);
 	object->color = def;
-	def.entries = get_3d_entries (0.0, 1.0, 0.0);
+	def = ft_init_3v(0.0, 1.0, 0.0);
 	object->normal = def;
 }
-/*
-static void		set_det(t_object *object, t_scene *scene)
+
+static void	set_det(t_object *object, t_scene *scene)
 {
-	object->normal = rotate_object(object, scene);
-	if (object->type == 0)
-		object->f = &get_t_plane;
-	else if (object->type == 1)
-		object->f = &get_t_sphere;
-	else if (object->type == 2)
-		object->f = &get_t_cylinder;
-	else if (object->type == 3)
-		object->f = &get_t_cone;
-}
-*/
-static void		set_det(t_object *object, t_scene *scene)
-{
+	scene->amount_obj++;
 	rotate_object(object, scene);
-//	if (object->type == 0)
-//		object->f = &get_s_plane;
-//	else if (object->type == 1)
-//		object->f = &get_s_sphere;
-	if (object->type == 2)
+	if (object->type == 0)
+		object->f = &get_s_plane;
+	else if (object->type == 1)
+		object->f = &get_s_sphere;
+	else if (object->type == 2)
 		object->f = &get_s_cylinder;
-//	else if (object->type == 3)
-//		object->f = &get_s_cone;
+	else if (object->type == 3)
+		object->f = &get_s_cone;
 }
 
-static double	get_radius_from_line(int fd)
+static int	get_object_type(char *s)
 {
-	char	*line;
-	double	to_return;
-
-	if (get_next_line(fd, &line) != 1)
-		error(0);
-	if (*(line++) != '\t' || *(line++) != '\t')
-		error(3);
-	if (!ft_isdigit(*line))
-		s_error("Radius must be a number.\n");
-	to_return = ft_atod(line);
-	if (to_return <= 0)
-		s_error("Radius must be strictly positive");
-	free(line - 2);
-	return (to_return);
-}
-
-static int		get_object_type(int fd)
-{
-	char	*line;
 	int		to_return;
 
 	to_return = -1;
-	if (get_next_line(fd, &line) != 1)
-		error(0);
-	if (*(line++) != '\t' || *(line++) != '\t')
-		error(3);
-	if (ft_strncmp(line, "plane", 5) == 0)
+	if (ft_strncmp(s, "plane", 5) == 0)
 		to_return = 0;
-	else if (ft_strncmp(line, "sphere", 6) == 0)
+	else if (ft_strncmp(s, "sphere", 6) == 0)
 		to_return = 1;
-	else if (ft_strncmp(line, "cylinder", 8) == 0)
+	else if (ft_strncmp(s, "cylinder", 8) == 0)
 		to_return = 2;
-	else if (ft_strncmp(line, "cone", 4) == 0)
+	else if (ft_strncmp(s, "cone", 4) == 0)
 		to_return = 3;
 	else
 		s_error("Object type is not valid");
-	free(line - 2);
 	return (to_return);
 }
 
-void			set_object(t_list **objects, t_scene *scene, int id, int fd)
+static void	set_values_object(t_object *obj, char *s, char *value)
+{
+	double	*tmp;
+
+	if (ft_strncmp(s, "type", 4) == 0)
+		obj->type = get_object_type(value);
+	else if (ft_strncmp(s, "origin", 6) == 0)
+		update_vector(&(obj->origin), value);
+	else if (ft_strncmp(s, "rotation", 7) == 0)
+		update_vector(&(obj->rotation), value);
+	else if (ft_strncmp(s, "color", 5) == 0)
+		update_vector(&(obj->color), value);
+	else if (ft_strncmp(s, "radius", 6) == 0)
+		obj->radius = ft_atod(value);
+	else if (ft_strncmp(s, "reflection", 10) == 0)
+	{
+		if (!(tmp = (double *)malloc(4 * sizeof(double))))
+			error(0);
+		get_doubles_from_line(tmp, value, 4);
+		obj->ambient = tmp[0];
+		obj->diffuse = tmp[1];
+		obj->specular = tmp[2];
+		obj->shininess = tmp[3];
+		free(tmp);
+	}
+}
+
+void		set_object(t_list **objects, t_scene *scene, int id, int fd)
 {
 	char		*line;
+	char		*s;
+	char		*value;
 	t_object	object;
 
 	init_def_object(&object, id);
 	while (get_next_line(fd, &line) == 1)
 	{
-		if (*line == '\0')
+		if (*(line) == '}')
 			break ;
-		if (*line != '\t')
-			error(3);
-		if (ft_strncmp(line + 1, "type:", 5) == 0)
-			object.type = get_object_type(fd);
-		else if (ft_strncmp(line + 1, "origin:", 7) == 0)
-			update_vector(fd, &(object.origin));
-		else if (ft_strncmp(line + 1, "rotation:", 8) == 0)
-			update_vector(fd, &(object.rotation));
-		else if (ft_strncmp(line + 1, "radius:", 7) == 0)
-			object.radius = get_radius_from_line(fd);
-		else if (ft_strncmp(line + 1, "color:", 6) == 0)
-			update_vector(fd, &(object.color));
+		if (ft_isalpha(*line) || !(s = ft_brace_content(line, '{', '}')))
+			error(0);
+		if (!(value = ft_brace_content(s, '{', '}')))
+			error(0);
+		set_values_object(&object, s, value);
 		free(line);
+		free(s);
+		free(value);
 	}
 	set_det(&object, scene);
 	free(line);
