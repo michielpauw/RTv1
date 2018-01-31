@@ -6,7 +6,7 @@
 /*   By: mpauw <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 15:40:06 by mpauw             #+#    #+#             */
-/*   Updated: 2018/01/31 14:33:17 by mpauw            ###   ########.fr       */
+/*   Updated: 2018/01/31 18:16:51 by mpauw            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ static double	get_s(t_3v point, t_3v *n, t_3v *dir_a, t_source cam)
 
 	s = 0;
 	tmp = 2 * ft_3_dot_product(n, dir_a);
-	if (cos(tmp) >= 0.95)
-		return (0);
 	dir_v = *n;
 	ft_3v_scalar(&dir_v, tmp);
 	tmp_dir = ft_3v_subtract(&dir_v, dir_a);
@@ -61,6 +59,8 @@ static double	get_s(t_3v point, t_3v *n, t_3v *dir_a, t_source cam)
 	ft_3v_scalar(tmp_dir, 1 / s);
 	s = ft_3_dot_product(&dir_v, tmp_dir);
 	free(tmp_dir);
+	if (cos(tmp) >= 0.95 && cos(ft_3_dot_product(tmp_dir, n)) >= 0.95)
+		return (0);
 	return (s);
 }
 
